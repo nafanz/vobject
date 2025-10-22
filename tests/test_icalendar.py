@@ -1,18 +1,12 @@
 import datetime
 import io
 import re
+import zoneinfo
 
 import dateutil
 import pytest
 
 import vobject
-
-# Only available from CPython 3.9 onwards
-try:
-    import zoneinfo
-except ImportError:
-    pass
-
 
 timezones = (
     "BEGIN:VTIMEZONE\r\n"
@@ -552,10 +546,11 @@ def test_omits_dst_offset():
         tz = dateutil.tz.gettz("America/New_York")
         assert tz is not None
         _timezones.append(tz)
-    if "zoneinfo" in globals():
-        tz = zoneinfo.ZoneInfo("America/New_York")
-        assert tz is not None
-        _timezones.append(tz)
+
+    # zoneinfo
+    tz = zoneinfo.ZoneInfo("America/New_York")
+    assert tz is not None
+    _timezones.append(tz)
 
     for tz in _timezones:
         dt = datetime.datetime(2020, 1, 1)
